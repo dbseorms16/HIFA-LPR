@@ -1,0 +1,66 @@
+번호판 인식을 위한 DBPN 기반 번호판 이미지 통째학습 SR 모델 학습 및 추론 코드( 시각 메모리 네트워크 기반 복원 기술 학습/추론 코드)
+
+설치 프로그램
+Anaconda 4.9.0
+Python 3.7.11 
+CUDA 10.0
+cudnn 7.6.5
+필요 라이브러리
+pip install -r requirements.txt 로 설치하시면 됩니다
+
+
+
+<Train 방법>
+
+
+
+#커맨드 입력 방식 (Train)
+python main.py
+
+  인자명    데이터타입  매개변수      설명
+upscale_factor   int         4         초해상도 배율
+batchsize       int        40           배치
+gpu_mode     bool       True       gpu사용 여부
+nEpochs       int       2000         훈련 횟수
+snapshot       int        1      확인을 위한 저장 간격
+residual       bool      False      잔여학습 여부
+patch size     int         4          patch의 크기
+
+
+
+위의 인자를 main.py의 parser에서 변경하면 여러 가지 배율, 배치 크기 등의 훈련인자 설정이 가능합니다.
+
+신경망의 Loss값은 훈련이 진행되면서 avg_loss.txt에 저장이 되고 이를 통해 loss값이 감소하는지를 확인할 수 있습니다.
+
+학습을 위한 train code로 실제 사진과 input되는 lr에 prediction을 추가한 것과 target HR과의 차이가 줄어드는 방향으로 훈련이 진행됩니다.
+
+ 이렇게 훈련된 가중치는 DBPN 폴더에서 weights 폴더에 저장이 되며 weight이름은 weight 폴더에 ‘_epoch_{}.pth’.format(epoch)로 저장됩니다. 여기서 epoch이라는 변수는 에포크의 횟수이며 이를 통해 매 회 생기는 가중치를 확인할 수 있습니다. 
+
+
+<Test 방법>
+
+#커맨드 입력방식( Test)
+python eval.py
+
+
+인자명         자료형      default             설명
+upscale_factor      int          4             초해상도 배율  
+testbatchsize       int          1           테스트용 이미지 배치
+gpu_mode        bool        True          gpu사용 여부
+output        파일경로    /Results/     eval을 통해 발생하는 사진을 저장하는 디렉토리
+input_dir      파일경로      Input           test용 이미지 파일이 들어있는 폴더 디렉토리
+test_dataset    파일이름       x4          input_dir내부에 test용 이미지가 들어있는 폴더 이름
+patch size       int           4           test patch의 크기
+model       파일경로   models/DBPN_x4.pth   eval을 위한 model 경로
+
+ex)
+python evalx2.py   -  2배율용
+python evalx3.py   -  3배율용
+python evalx4.py   -  4배율용
+
+DBPN에서 test code는 eval.py이며 이 코드를 통해 input에 있는 LR 데이터를 초해상도 시킬 수 있습니다. 그러나 그림 4에 있는 코드로 eval.py 가 train을 하면서 실행되기  때문에  따로 돌리실 필요는 없으실 것 같습니다. python main.py를 하시게 되면 훈련을 하면서 같이 test도 진행되기 때문에 따로 확인을 하실 필요는 없으시지만 저희가 드리는 weight를 통해 test만 하시고 싶으시다면 model파라미터 변수에서 파일경로를 저희가 제공하는 파일에서 weights파일에 들어있는 가중치 파일 경로로 설정해주시면 이미지 초해상도가 바로 가능합니다.
+- train data 폴더는 ./Dataset/[train_data_dir]/ 로 되어있습니다
+- LR 이미지 폴더는 ./Input/[lr_dir]/로 되어있습니다 (default ‘./Input/x4’)
+- HR 이미지 폴더는 ./Input/[HR_dir]/로 되어있습니다 (default ‘./Input/verix4’)
+- 데이터 입력 관련 코드는 main.py eval.py의 하이퍼 파라미터를 확인하시면 됩니다.
+

@@ -1,0 +1,5 @@
+[default]
+entity = sungjin8191-gmail-com
+project = YOLOv5
+base_url = https://api.wandb.ai
+

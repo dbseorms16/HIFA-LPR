@@ -1,0 +1,8 @@
+
+*.jpg
+*.zip 
+*.pt
+*.pth
+
+Dataset/
+

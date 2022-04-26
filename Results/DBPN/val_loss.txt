@@ -1,5 +1,0 @@
-0 average val_loss is 0.024449067562818526
-0 average val_loss is 0.024449067562818526
-0 average val_loss is 0.0237936083227396
-1 average val_loss is 0.024449067562818526
-1 average val_loss is 0.024449067562818526
